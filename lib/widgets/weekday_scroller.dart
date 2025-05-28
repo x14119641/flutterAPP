@@ -32,7 +32,7 @@ class WeekdayScroller extends StatelessWidget {
           return Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical:12),
             decoration: BoxDecoration(
-              color: isToday ? Colors.deepPurpleAccent: Colors.indigoAccent,
+              color: isToday ? Theme.of(context).colorScheme.secondary: Theme.of(context).colorScheme.onPrimary,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Column(
@@ -42,14 +42,14 @@ class WeekdayScroller extends StatelessWidget {
                   dayFormatter.format(date),
                   style: TextStyle(
                     fontSize: 14, fontWeight: FontWeight.bold,
-                    color: isToday ? Colors.white : Colors.black12,
+                    color: Theme.of(context).colorScheme.onSecondary,
                   ),
                 ),
                 Text(
                   dateFormatter.format(date),
                   style: TextStyle(
                     fontSize: 16,
-                    color: isToday ? Colors.white10 : Colors.black12,
+                    color: Theme.of(context).colorScheme.onSecondary,
                   ),
                 )
               ],

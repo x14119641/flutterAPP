@@ -12,7 +12,7 @@ class BaseLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blueAccent,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: CustomAppBar(title: title),
       drawer: const AppDrawer(),
       body: Padding(padding: const EdgeInsets.all(8.0), child: child,),

@@ -13,13 +13,21 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Your Appr Name',
       theme: ThemeData(
-        colorScheme: ColorScheme.dark(),
+        colorScheme: const ColorScheme.light(
+          primary: Color(0xFFF0EAD2),
+          onPrimary: Color(0xFF6C584C),
+          secondary: Color(0xFFA98467),
+          onSecondary: Colors.white, // text colors
+          surface: Color(0xFFDDE5B6),
+          onSurface: Color(0xFF6C584C),
+          error: Colors.red,
+          onError: Colors.white,
+        ),
         useMaterial3: true,
+        scaffoldBackgroundColor: Color(0xFFF0EAD2),
       ),
       initialRoute: '/',
-      routes: {
-        '/': (context) =>  const HomePage(),
-      },
+      routes: {'/': (context) => const HomePage()},
     );
   }
 }
