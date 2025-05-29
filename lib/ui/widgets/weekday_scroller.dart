@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/store/date_store.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+
+
 
 class WeekdayScroller extends StatefulWidget {
   const WeekdayScroller({super.key});
@@ -11,15 +15,6 @@ class WeekdayScroller extends StatefulWidget {
 class _WeekdayScrollerState extends State<WeekdayScroller> {
   final PageController _pageController = PageController(initialPage: 52); // Today in the middle
   final DateTime today = DateTime.now();
-  late DateTime selectedDate;
-
-  // static const double cellWidth = 28;
-
-  @override
-  void initState() {
-    super.initState();
-    selectedDate = today;
-  }
 
   int getWeekNumber(DateTime date) {
     final thursday = date.add(Duration(days: (4 - date.weekday)));
@@ -36,6 +31,8 @@ class _WeekdayScrollerState extends State<WeekdayScroller> {
 
   @override
   Widget build(BuildContext context) {
+    final dateStore = Provider.of<DateStore>(context);
+    final selectedDate = dateStore.selectedDate;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -80,9 +77,8 @@ class _WeekdayScrollerState extends State<WeekdayScroller> {
             controller: _pageController,
             scrollDirection: Axis.horizontal,
             onPageChanged: (index) {
-              setState(() {
-                selectedDate = today.add(Duration(days: (index - 52) * 7));
-              });
+             final newDate = today.add(Duration(days: (index-52)*7));
+             dateStore.setDate(newDate);
             },
             itemBuilder: (context, pageIndex) {
               final baseDate = today.add(Duration(days: (pageIndex - 52) * 7));
@@ -92,21 +88,17 @@ class _WeekdayScrollerState extends State<WeekdayScroller> {
               return Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: weekDates.map((date) {
-                  final isToday = DateUtils.isSameDay(date, today);
-                  final isSelected = DateUtils.isSameDay(date, selectedDate);
+                  final isToday = DateUtils.isSameDay(date, DateTime.now());
+                  final isSelected = date == context.watch<DateStore>().selectedDate;
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 4),
                     child: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          selectedDate = date;
-                        });
-                      },
+                      onTap: () => dateStore.setDate(date),
                       child: Card(
                         color: isSelected
                             ? Theme.of(context).colorScheme.primary
                             : isToday
-                                ? Theme.of(context).colorScheme.secondary
+                                ? Theme.of(context).colorScheme.surface
                                 : Theme.of(context).colorScheme.surface,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
@@ -122,6 +114,8 @@ class _WeekdayScrollerState extends State<WeekdayScroller> {
                                 fontWeight: FontWeight.w500,
                                 color: isSelected
                                     ? Theme.of(context).colorScheme.onPrimary
+                                    : isToday
+                                    ? Theme.of(context).colorScheme.error
                                     : Theme.of(context).colorScheme.onSurface,
                               ),
                             ),
