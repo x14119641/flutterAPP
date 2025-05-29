@@ -13,8 +13,6 @@ class HomePage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ContentCard(child: Text("Select Range"),
-          ),
           ContentCard(child: WeekdayScroller(),
           ),
         ],
