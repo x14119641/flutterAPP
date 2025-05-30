@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/store/date_store.dart';
+import 'package:flutter_application_1/ui/screens/full_calendar_screen.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -38,13 +39,30 @@ class _WeekdayScrollerState extends State<WeekdayScroller> {
         // Week number
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Text(
-            '📅 Week ${getWeekNumber(selectedDate)}',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: Theme.of(context).colorScheme.primary,
-            ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Week ${getWeekNumber(selectedDate)}',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              ),
+              IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => FullCalendarScreen(),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.calendar_today),
+                tooltip: 'Open Calendar',
+              ),
+            ],
           ),
         ),
         // const SizedBox(height: 4),
@@ -83,7 +101,10 @@ class _WeekdayScrollerState extends State<WeekdayScroller> {
             itemBuilder: (context, pageIndex) {
               final baseDate = today.add(Duration(days: (pageIndex - 52) * 7));
               final startOfWeek = getStartOfWeek(baseDate);
-              final weekDates = List.generate(7, (i) => startOfWeek.add(Duration(days: i)));
+              final weekDates = List.generate(
+                7,
+                (i) => startOfWeek.add(Duration(days: i)),
+              );
 
               return Center(
                 child: ConstrainedBox(
@@ -92,7 +113,8 @@ class _WeekdayScrollerState extends State<WeekdayScroller> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: weekDates.map((date) {
                       final isToday = DateUtils.isSameDay(date, DateTime.now());
-                      final isSelected = date == context.watch<DateStore>().selectedDate;
+                      final isSelected =
+                          date == context.watch<DateStore>().selectedDate;
 
                       return Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 2),
@@ -102,8 +124,8 @@ class _WeekdayScrollerState extends State<WeekdayScroller> {
                             color: isSelected
                                 ? Theme.of(context).colorScheme.primary
                                 : isToday
-                                    ? Theme.of(context).colorScheme.secondary
-                                    : Theme.of(context).colorScheme.surface,
+                                ? Theme.of(context).colorScheme.secondary
+                                : Theme.of(context).colorScheme.surface,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
@@ -117,8 +139,12 @@ class _WeekdayScrollerState extends State<WeekdayScroller> {
                                     fontSize: 14,
                                     fontWeight: FontWeight.w500,
                                     color: isSelected
-                                        ? Theme.of(context).colorScheme.onPrimary
-                                        : Theme.of(context).colorScheme.onSurface,
+                                        ? Theme.of(
+                                            context,
+                                          ).colorScheme.onPrimary
+                                        : Theme.of(
+                                            context,
+                                          ).colorScheme.onSurface,
                                   ),
                                 ),
                               ),
