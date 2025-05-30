@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 class ContentCard extends StatelessWidget {
   final Widget child;
   final EdgeInsetsGeometry padding;
@@ -17,21 +16,14 @@ class ContentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin:margin,
-      padding: padding,
-      decoration: BoxDecoration(
+    return Padding(
+      padding: margin,
+      child: Card(
         color: color ?? Colors.transparent,
-        borderRadius:  BorderRadius.circular(12),
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.black12,
-            // blurRadius: 8,
-            offset: Offset(0,4),
-          ),
-        ],
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        elevation: 2,
+        child: Padding(padding: padding, child: child),
       ),
-      child: child,
     );
   }
 }

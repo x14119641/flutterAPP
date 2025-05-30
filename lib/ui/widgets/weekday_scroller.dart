@@ -3,8 +3,6 @@ import 'package:flutter_application_1/store/date_store.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-
-
 class WeekdayScroller extends StatefulWidget {
   const WeekdayScroller({super.key});
 
@@ -13,7 +11,7 @@ class WeekdayScroller extends StatefulWidget {
 }
 
 class _WeekdayScrollerState extends State<WeekdayScroller> {
-  final PageController _pageController = PageController(initialPage: 52); // Today in the middle
+  final PageController _pageController = PageController(initialPage: 52);
   final DateTime today = DateTime.now();
 
   int getWeekNumber(DateTime date) {
@@ -33,6 +31,7 @@ class _WeekdayScrollerState extends State<WeekdayScroller> {
   Widget build(BuildContext context) {
     final dateStore = Provider.of<DateStore>(context);
     final selectedDate = dateStore.selectedDate;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -48,7 +47,7 @@ class _WeekdayScrollerState extends State<WeekdayScroller> {
             ),
           ),
         ),
-        const SizedBox(height: 4),
+        // const SizedBox(height: 4),
 
         // Static weekday names
         Row(
@@ -56,7 +55,7 @@ class _WeekdayScrollerState extends State<WeekdayScroller> {
           children: List.generate(7, (i) {
             final weekday = DateFormat('E').format(DateTime(2020, 1, 6 + i));
             return SizedBox(
-              width: 44,
+              width: 40,
               child: Text(
                 weekday,
                 textAlign: TextAlign.center,
@@ -68,63 +67,68 @@ class _WeekdayScrollerState extends State<WeekdayScroller> {
             );
           }),
         ),
-        const SizedBox(height: 6),
+        // const SizedBox(height: 2),
 
         // Weekly pager
         SizedBox(
-          height: 36,
+          height: 40,
+          width: double.infinity,
           child: PageView.builder(
             controller: _pageController,
             scrollDirection: Axis.horizontal,
             onPageChanged: (index) {
-             final newDate = today.add(Duration(days: (index-52)*7));
-             dateStore.setDate(newDate);
+              final newDate = today.add(Duration(days: (index - 52) * 7));
+              dateStore.setDate(newDate);
             },
             itemBuilder: (context, pageIndex) {
               final baseDate = today.add(Duration(days: (pageIndex - 52) * 7));
               final startOfWeek = getStartOfWeek(baseDate);
               final weekDates = List.generate(7, (i) => startOfWeek.add(Duration(days: i)));
 
-              return Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: weekDates.map((date) {
-                  final isToday = DateUtils.isSameDay(date, DateTime.now());
-                  final isSelected = date == context.watch<DateStore>().selectedDate;
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
-                    child: GestureDetector(
-                      onTap: () => dateStore.setDate(date),
-                      child: Card(
-                        color: isSelected
-                            ? Theme.of(context).colorScheme.primary
-                            : isToday
-                                ? Theme.of(context).colorScheme.surface
-                                : Theme.of(context).colorScheme.surface,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: SizedBox(
-                          width: 28,
-                          height: 28,
-                          child: Center(
-                            child: Text(
-                              DateFormat('d').format(date),
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color: isSelected
-                                    ? Theme.of(context).colorScheme.onPrimary
-                                    : isToday
-                                    ? Theme.of(context).colorScheme.error
-                                    : Theme.of(context).colorScheme.onSurface,
+              return Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 360),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: weekDates.map((date) {
+                      final isToday = DateUtils.isSameDay(date, DateTime.now());
+                      final isSelected = date == context.watch<DateStore>().selectedDate;
+
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 2),
+                        child: GestureDetector(
+                          onTap: () => dateStore.setDate(date),
+                          child: Card(
+                            color: isSelected
+                                ? Theme.of(context).colorScheme.primary
+                                : isToday
+                                    ? Theme.of(context).colorScheme.secondary
+                                    : Theme.of(context).colorScheme.surface,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: SizedBox(
+                              width: 28,
+                              height: 28,
+                              child: Center(
+                                child: Text(
+                                  DateFormat('d').format(date),
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                    color: isSelected
+                                        ? Theme.of(context).colorScheme.onPrimary
+                                        : Theme.of(context).colorScheme.onSurface,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    ),
-                  );
-                }).toList(),
+                      );
+                    }).toList(),
+                  ),
+                ),
               );
             },
           ),
